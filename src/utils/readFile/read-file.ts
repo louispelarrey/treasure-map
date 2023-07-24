@@ -1,5 +1,12 @@
 import { IMap, IMountain, ITreasure, IAdventurer } from "../../types";
 
+/**
+ * Read and parse the content of a file.
+ *
+ * @param {File} file - The file to read and parse.
+ * @returns {Promise<[IMap, IMountain[], ITreasure[], IAdventurer[]]>} A Promise that resolves with an array containing the parsed data: map, mountains, treasures, and adventurers.
+ * @throws {Error} If the file content is not a string or if the input file contains an invalid line.
+ */
 export const readFile = (
   file: File
 ): Promise<[IMap, IMountain[], ITreasure[], IAdventurer[]]> => {

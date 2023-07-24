@@ -1,17 +1,29 @@
 import { IMap, IMountain, ITreasure, IAdventurer } from "../../types";
 
+/**
+ * Simulate movements of adventurers on the map, considering mountains, treasures, and collisions.
+ *
+ * @param {IMap} map - The map object containing width and height information.
+ * @param {IMountain[]} mountains - An array of mountain objects, each with x and y coordinates.
+ * @param {ITreasure[]} treasures - An array of treasure objects, each with x, y coordinates, and a count of treasures.
+ * @param {IAdventurer[]} adventurers - An array of adventurer objects, each with name, x and y coordinates, direction, moves, and treasures count.
+ * @returns {[IMountain[], ITreasure[], IAdventurer[]]} An array containing the updated mountains, treasures, and adventurers after the movements simulation.
+ */
 export const simulateMovements = (
   map: IMap,
   mountains: IMountain[],
   treasures: ITreasure[],
   adventurers: IAdventurer[]
 ): [IMountain[], ITreasure[], IAdventurer[]] => {
+  // Helper function to check if a position is occupied by a mountain
   const isOccupiedByMountain = (x: number, y: number) =>
     mountains.some((mountain) => mountain.x === x && mountain.y === y);
 
+  // Helper function to check if a position is occupied by an adventurer
   const isOccupiedByAdventurer = (x: number, y: number) =>
     adventurers.some((adventurer) => adventurer.x === x && adventurer.y === y);
 
+  // Helper function to rotate the direction of an adventurer
   const rotate = (direction: string, rotation: string) => {
     const directions = ["N", "E", "S", "W"];
     const newDirectionIndex =
@@ -23,6 +35,7 @@ export const simulateMovements = (
     return directions[newDirectionIndex];
   };
 
+  // Helper function to move an adventurer to a new position
   const move = (adventurer: IAdventurer, newX: number, newY: number) => {
     if (
       newX < 0 ||
@@ -38,6 +51,7 @@ export const simulateMovements = (
     return true;
   };
 
+  // Helper function to let an adventurer pick up a treasure if available at their position
   const pickTreasure = (adventurer: IAdventurer) => {
     const treasure = treasures.find(
       (treasure) => treasure.x === adventurer.x && treasure.y === adventurer.y
@@ -49,13 +63,13 @@ export const simulateMovements = (
     }
   };
 
+  // Main movement simulation loop
   for (
     let i = 0;
     i < Math.max(...adventurers.map((adventurer) => adventurer.moves.length));
     i++
   ) {
-    const newPositions: { adventurer: IAdventurer; x: number; y: number }[] =
-      [];
+    const newPositions: { adventurer: IAdventurer; x: number; y: number }[] = [];
 
     adventurers.forEach((adventurer) => {
       const moveType = adventurer.moves[i];
@@ -94,6 +108,7 @@ export const simulateMovements = (
       }
     });
 
+    // Handle collisions and update positions
     newPositions.forEach(({ adventurer, x, y }) => {
       if (
         !newPositions.some(
